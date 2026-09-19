@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.DS_Store
+
+# Raw working material (source video, unsplit frame exports).
+# Large and not needed to build or deploy the site.
+source-assets/
