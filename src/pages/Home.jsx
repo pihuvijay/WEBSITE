@@ -35,13 +35,13 @@ const SKILLS_BY_SECTION = {
   object precisely while the text stays fully legible.
 */
 const HOTSPOTS = [
-  { id: "hs-ge", target: "ge-vernova", label: "Software / Product Engineer", dot: [77.7, 88.0], labelPos: [74, 75] },
-  { id: "hs-wake", target: "wakewatch", label: "Hackathon + Incubator Win", dot: [40.9, 74.7], labelPos: [47, 55] },
-  { id: "hs-studio", target: "fulcrum", label: "AI Engineer", dot: [31.6, 27.9], labelPos: [30, 6] },
-  { id: "hs-ma", target: "ma-ai", label: "M&A Project", dot: [87.6, 56.1], labelPos: [91, 75] },
-  { id: "hs-noumena", target: "noumena", label: "Cybersecurity Engineer/Analyst", dot: [74.6, 57.0], labelPos: [71, 66] },
-  { id: "hs-feature", target: "feature", label: "Magazine Feature", dot: [61.8, 53.5], labelPos: [57, 65] },
-  { id: "hs-mirror", target: "studio1", label: "Full Stack Developer", dot: [55, 71], labelPos: [58, 25] }
+  { id: "hs-ge", target: "ge-vernova", label: "Software / Product Engineer", dot: [77.7, 88.0], labelPos: [74, 75], labelPosMobile: [77, 120] },
+  { id: "hs-wake", target: "wakewatch", label: "Hackathon + Incubator Win", dot: [40.9, 74.7], labelPos: [47, 55], labelPosMobile: [28, 86] },
+  { id: "hs-studio", target: "fulcrum", label: "AI Engineer", dot: [31.6, 27.9], labelPos: [30, 6], labelPosMobile: [31.6, 12] },
+  { id: "hs-ma", target: "ma-ai", label: "M&A Project", dot: [87.6, 56.1], labelPos: [91, 75], labelPosMobile: [88, 36] },
+  { id: "hs-noumena", target: "noumena", label: "Cybersecurity Engineer/Analyst", dot: [74.6, 57.0], labelPos: [71, 66], labelPosMobile: [75, 78] },
+  { id: "hs-feature", target: "feature", label: "Magazine Feature", dot: [61.8, 53.5], labelPos: [57, 65], labelPosMobile: [51, 35] },
+  { id: "hs-mirror", target: "studio1", label: "Full Stack Developer", dot: [55, 71], labelPos: [58, 25], labelPosMobile: [64, 102] }
 ];
 
 function frameURL(number){
@@ -60,10 +60,12 @@ export default function Home(){
 
   const canvasRef = useRef(null);
   const trackRef = useRef(null);
+  const heroRef = useRef(null);
   const afterBackgroundRef = useRef(null);
   const skillsPanelRef = useRef(null);
   const skillsListRef = useRef(null);
   const scrollHintRef = useRef(null);
+  const hotspotLayerRef = useRef(null);
   const hotspotRefs = useRef({});
   const sectionHeadingRefs = useRef({});
   const revealRefs = useRef([]);
@@ -73,10 +75,12 @@ export default function Home(){
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     const track = trackRef.current;
+    const hero = heroRef.current;
     const afterBackground = afterBackgroundRef.current;
     const skillsPanel = skillsPanelRef.current;
     const skillsList = skillsListRef.current;
     const scrollHint = scrollHintRef.current;
+    const hotspotLayer = hotspotLayerRef.current;
     const hotspots = HOTSPOTS
       .map(h => ({ target: h.target, ...hotspotRefs.current[h.id] }))
       .filter(h => h.dot && h.label && h.line);
@@ -194,6 +198,93 @@ export default function Home(){
 
     }
 
+    function isMobileViewport(){
+      return window.innerWidth <= 700;
+    }
+
+    /*
+      Mobile portrait screens crop the 16:9 frames hard under
+      "cover" fit, slicing off most of the spilled objects. On
+      mobile we shrink-to-fit instead (the full frame stays
+      visible) and pad the leftover top/bottom with the stone
+      tone from the shot so it reads as an intentional frame,
+      not letterboxing. Desktop keeps the original cover fit.
+    */
+    function getDrawRect(img){
+
+      const cw = window.innerWidth;
+      const ch = window.innerHeight;
+      const iw = img.naturalWidth;
+      const ih = img.naturalHeight;
+
+      const scale = isMobileViewport()
+        ? Math.min(cw / iw, ch / ih)
+        : Math.max(cw / iw, ch / ih);
+
+      const width = iw * scale;
+      const height = ih * scale;
+      const x = (cw - width) / 2;
+      const y = (ch - height) / 2;
+
+      return { x, y, width, height };
+
+    }
+
+    function updateLabelPositions(){
+
+      const mobile = isMobileViewport();
+
+      HOTSPOTS.forEach(h => {
+
+        const refs = hotspotRefs.current[h.id];
+
+        if(!refs?.label){
+          return;
+        }
+
+        const [lx, ly] = mobile ? h.labelPosMobile : h.labelPos;
+
+        refs.label.style.left = lx + "%";
+        refs.label.style.top = ly + "%";
+
+        if(refs.line){
+          refs.line.setAttribute("x2", lx);
+          refs.line.setAttribute("y2", ly);
+        }
+
+      });
+
+    }
+
+    function updateHotspotLayerRect(){
+
+      if(!hotspotLayer){
+        return;
+      }
+
+      if(!isMobileViewport()){
+        hotspotLayer.style.left = "0";
+        hotspotLayer.style.top = "0";
+        hotspotLayer.style.width = "100%";
+        hotspotLayer.style.height = "100%";
+        return;
+      }
+
+      const img = images[0];
+
+      if(!img || !img.naturalWidth){
+        return;
+      }
+
+      const { x, y, width, height } = getDrawRect(img);
+
+      hotspotLayer.style.left = x + "px";
+      hotspotLayer.style.top = y + "px";
+      hotspotLayer.style.width = width + "px";
+      hotspotLayer.style.height = height + "px";
+
+    }
+
     function resizeCanvas(){
 
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -204,6 +295,9 @@ export default function Home(){
       canvas.style.height = window.innerHeight + "px";
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      updateHotspotLayerRect();
+      updateLabelPositions();
 
       if(images[Math.round(currentFrame)]?.complete){
         lastDrawnFrame = -1;
@@ -230,16 +324,32 @@ export default function Home(){
 
       const cw = window.innerWidth;
       const ch = window.innerHeight;
-      const iw = img.naturalWidth;
-      const ih = img.naturalHeight;
-
-      const scale = Math.max(cw / iw, ch / ih);
-      const width = iw * scale;
-      const height = ih * scale;
-      const x = (cw - width) / 2;
-      const y = (ch - height) / 2;
+      const { x, y, width, height } = getDrawRect(img);
 
       ctx.clearRect(0, 0, cw, ch);
+
+      if(isMobileViewport()){
+
+        /*
+          Fill the letterbox bars with a blurred, scaled-up "cover"
+          copy of the same frame instead of a flat colour, so the
+          top/bottom padding reads as a soft continuation of the
+          shot rather than an obvious background swap.
+        */
+        const coverScale = Math.max(cw / img.naturalWidth, ch / img.naturalHeight) * 1.15;
+        const bw = img.naturalWidth * coverScale;
+        const bh = img.naturalHeight * coverScale;
+
+        ctx.save();
+        ctx.filter = "blur(40px) brightness(0.82) saturate(1.05)";
+        ctx.drawImage(img, (cw - bw) / 2, (ch - bh) / 2, bw, bh);
+        ctx.restore();
+
+        ctx.fillStyle = "rgba(10,10,10,0.22)";
+        ctx.fillRect(0, 0, cw, ch);
+
+      }
+
       ctx.drawImage(img, x, y, width, height);
 
     }
@@ -253,7 +363,11 @@ export default function Home(){
       p = Math.max(0, Math.min(1, p));
 
       if(scrollHint){
-        scrollHint.classList.toggle("is-hidden", p > 0.015);
+        scrollHint.classList.toggle("is-hidden", p > 0.04);
+      }
+
+      if(hero){
+        hero.classList.toggle("is-hidden", isMobileViewport() && p > 0.06);
       }
 
       const maxFrame = FRAMES.end - FRAMES.start;
@@ -391,9 +505,9 @@ export default function Home(){
 
           <div id="scrim" />
 
-          <div className="hero">
+          <div className="hero" ref={heroRef}>
             <h1>Pihu<br />Vijaywargiya</h1>
-            <p>Selected Work</p>
+            <p>Selected Portfolio</p>
           </div>
 
           <div className="scroll-hint" ref={scrollHintRef} aria-hidden="true">
@@ -403,46 +517,50 @@ export default function Home(){
             <span className="scroll-hint-text">Scroll</span>
           </div>
 
-          <svg className="hotspot-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <div className="hotspot-layer" ref={hotspotLayerRef}>
+
+            <svg className="hotspot-lines" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+              {HOTSPOTS.map(h => (
+                <line
+                  key={h.id}
+                  x1={h.dot[0]} y1={h.dot[1]}
+                  x2={h.labelPos[0]} y2={h.labelPos[1]}
+                  className="hotspot-line"
+                  ref={el => {
+                    hotspotRefs.current[h.id] = { ...(hotspotRefs.current[h.id] || {}), line: el };
+                  }}
+                />
+              ))}
+            </svg>
+
             {HOTSPOTS.map(h => (
-              <line
+              <div
                 key={h.id}
-                x1={h.dot[0]} y1={h.dot[1]}
-                x2={h.labelPos[0]} y2={h.labelPos[1]}
-                className="hotspot-line"
+                className="hotspot-dot"
+                id={h.id}
+                data-target={h.target}
+                aria-label={h.label}
+                style={{ left: `${h.dot[0]}%`, top: `${h.dot[1]}%` }}
                 ref={el => {
-                  hotspotRefs.current[h.id] = { ...(hotspotRefs.current[h.id] || {}), line: el };
+                  hotspotRefs.current[h.id] = { ...(hotspotRefs.current[h.id] || {}), dot: el };
                 }}
               />
             ))}
-          </svg>
 
-          {HOTSPOTS.map(h => (
-            <div
-              key={h.id}
-              className="hotspot-dot"
-              id={h.id}
-              data-target={h.target}
-              aria-label={h.label}
-              style={{ left: `${h.dot[0]}%`, top: `${h.dot[1]}%` }}
-              ref={el => {
-                hotspotRefs.current[h.id] = { ...(hotspotRefs.current[h.id] || {}), dot: el };
-              }}
-            />
-          ))}
+            {HOTSPOTS.map(h => (
+              <span
+                key={h.id}
+                className="hotspot-label"
+                style={{ left: `${h.labelPos[0]}%`, top: `${h.labelPos[1]}%` }}
+                ref={el => {
+                  hotspotRefs.current[h.id] = { ...(hotspotRefs.current[h.id] || {}), label: el };
+                }}
+              >
+                {h.label}
+              </span>
+            ))}
 
-          {HOTSPOTS.map(h => (
-            <span
-              key={h.id}
-              className="hotspot-label"
-              style={{ left: `${h.labelPos[0]}%`, top: `${h.labelPos[1]}%` }}
-              ref={el => {
-                hotspotRefs.current[h.id] = { ...(hotspotRefs.current[h.id] || {}), label: el };
-              }}
-            >
-              {h.label}
-            </span>
-          ))}
+          </div>
 
         </div>
 
