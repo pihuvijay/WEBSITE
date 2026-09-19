@@ -1,7 +1,7 @@
 import { GitHubIcon, LinkedInIcon, EmailIcon } from "./icons.jsx";
 
 const GITHUB_URL = "https://github.com/pihuvijay";
-const LINKEDIN_URL = "https://linkedin.com/in/pihuvijay-71524a252";
+const LINKEDIN_URL = "https://www.linkedin.com/in/pihu-vijay/";
 const EMAIL = "pihuvijay06@gmail.com";
 
 function scrollToId(id){

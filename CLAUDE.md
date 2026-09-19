@@ -137,7 +137,7 @@ borrowed elements read as one intentional site.
 ## CONTACT / LINKS (fill in confirmed values)
 - Name: Pihu Vijaywargiya
 - Email: pihuvijay06@gmail.com
-- LinkedIn: linkedin.com/in/pihuvijay-71524a252
+- LinkedIn: linkedin.com/in/pihu-vijay
 - GitHub: [confirm handle]
 - Status: BSc Computer Science, University of Bath (graduating 2028); currently on
   industrial placement at GE Vernova.

@@ -3,25 +3,23 @@ import { useSpring, animated, to } from "@react-spring/web";
 import { GitHubIcon, LinkedInIcon, EmailIcon, PenIcon } from "../components/icons.jsx";
 
 const GITHUB_URL = "https://github.com/pihuvijay";
-const LINKEDIN_URL = "https://linkedin.com/in/pihuvijay-71524a252";
+const LINKEDIN_URL = "https://www.linkedin.com/in/pihu-vijay/";
 const EMAIL = "pihuvijay06@gmail.com";
 
 export default function Contact({ headingRef, revealRef }){
-
-  const [dropped, setDropped] = useState(false);
-  const [landed, setLanded] = useState(false);
-
-  const sectionRef = useRef(null);
 
   const reduceMotion =
     typeof window !== "undefined" &&
     window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  const [dropped, setDropped] = useState(reduceMotion);
+  const [landed, setLanded] = useState(reduceMotion);
+
+  const sectionRef = useRef(null);
+
   useEffect(() => {
 
     if(reduceMotion){
-      setDropped(true);
-      setLanded(true);
       return;
     }
 
@@ -104,7 +102,7 @@ export default function Contact({ headingRef, revealRef }){
 
           <a href={LINKEDIN_URL} target="_blank" rel="noreferrer noopener">
             <LinkedInIcon />
-            linkedin.com/in/pihuvijay
+            linkedin.com/in/pihu-vijay
           </a>
 
           <a href={GITHUB_URL} target="_blank" rel="noreferrer noopener">

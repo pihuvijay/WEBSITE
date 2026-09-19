@@ -9,7 +9,7 @@ export default function About({ headingRef, revealRef }){
         <h1>Software, and the room to explain it.</h1>
 
         <p>
-          I'm <strong>Pihu Vijaywargiya</strong>, a Computer Science student at the
+          I&apos;m <strong>Pihu Vijaywargiya</strong>, a Computer Science student at the
           University of Bath, currently on industrial placement as a Software
           Engineer &amp; Technical Consultant at <strong>GE Vernova</strong>,
           building customer-side software for real-time national grid systems,
@@ -30,7 +30,7 @@ export default function About({ headingRef, revealRef }){
         </p>
 
         <p>
-          Outside of client-facing work, I've led a team of four engineers at
+          Outside of client-facing work, I&apos;ve led a team of four engineers at
           Studio1 and built ML pipelines for drowsiness detection and
           financial document intelligence. I was also featured in a Women in
           Tech list, and I care about making tech and engineering careers
@@ -39,11 +39,11 @@ export default function About({ headingRef, revealRef }){
 
         <div className="about-directory" aria-hidden="true">
           <div className="dir-line"><span className="dir-name">pihu/</span></div>
-          <div className="dir-line">├── ge-vernova.py       <span className="dir-comment">// current software engineer</span></div>
-          <div className="dir-line">├── wakewatch/          <span className="dir-comment">// founder, computer vision/ML</span></div>
-          <div className="dir-line">├── studio1.ts          <span className="dir-comment">// full-stack</span></div>
-          <div className="dir-line">├── fulcrum-digital.py  <span className="dir-comment">// RAG, AI agents</span></div>
-          <div className="dir-line">├── noumena.md          <span className="dir-comment">// cybersecurity</span></div>
+          <div className="dir-line">├── ge-vernova.py       <span className="dir-comment">{"// current software engineer"}</span></div>
+          <div className="dir-line">├── wakewatch/          <span className="dir-comment">{"// founder, computer vision/ML"}</span></div>
+          <div className="dir-line">├── studio1.ts          <span className="dir-comment">{"// full-stack"}</span></div>
+          <div className="dir-line">├── fulcrum-digital.py  <span className="dir-comment">{"// RAG, AI agents"}</span></div>
+          <div className="dir-line">├── noumena.md          <span className="dir-comment">{"// cybersecurity"}</span></div>
           <div className="dir-line">└── contact.txt</div>
         </div>
 

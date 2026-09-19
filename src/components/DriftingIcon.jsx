@@ -34,7 +34,6 @@ export default function DriftingIcon(){
   const drift = useSpring({
     from:{ x: -40 },
     to: async (next) => {
-      // eslint-disable-next-line no-constant-condition
       while(true){
         await next({ x: viewportWidth + 40 });
         await next({ x: -40, immediate:true });

@@ -82,7 +82,6 @@ export default function Home(){
       .filter(h => h.dot && h.label && h.line);
 
     let images = [];
-    let loaded = 0;
     let currentFrame = 0;
     let targetFrame = 0;
     let lastDrawnFrame = -1;
@@ -179,7 +178,6 @@ export default function Home(){
         img.src = frameURL(i);
 
         img.onload = () => {
-          loaded++;
           if(i === FRAMES.start){
             resizeCanvas();
             drawFrame(0);
@@ -641,7 +639,7 @@ export default function Home(){
               <li>
                 Architected CI/CD pipelines with GitHub Actions and automated
                 Jest testing (85% coverage), cutting deployment time by 60%,
-                and authored the team's API Route Rulebook for endpoint
+                and authored the team&apos;s API Route Rulebook for endpoint
                 design and authentication standards.
               </li>
               <li>
