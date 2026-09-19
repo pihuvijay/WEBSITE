@@ -1,4 +1,5 @@
 import { Routes, Route } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
 import { SpillProvider } from "./context/SpillContext.jsx";
 import Sidebar from "./components/Sidebar.jsx";
 import DriftingIcon from "./components/DriftingIcon.jsx";
@@ -14,6 +15,7 @@ export default function App(){
       <Routes>
         <Route path="/" element={<Home />} />
       </Routes>
+      <Analytics />
     </SpillProvider>
   );
 
